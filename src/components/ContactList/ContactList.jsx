@@ -27,4 +27,11 @@ export default ContactList;
 
 ContactList.propTypes = {
   deleteContact: PropTypes.func.isRequired,
+  filter: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+    })
+  ),
 };
