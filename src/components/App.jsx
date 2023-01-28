@@ -6,6 +6,7 @@ import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
 
 import styles from './app.module.css';
+import Notiflix from 'notiflix';
 
 class App extends Component {
   state = {
@@ -42,10 +43,12 @@ class App extends Component {
 
     if (
       this.state.contacts.find(item => {
-        return item.name === contact.name;
+        return (
+          item.name.toLocaleLowerCase() === contact.name.toLocaleLowerCase()
+        );
       })
     ) {
-      return alert(`${contact.name} is already in contacts`);
+      return Notiflix.Notify.failure(`${contact.name} is already in contacts`);
     }
     this.setState(prevState => ({
       contacts: [contact, ...prevState.contacts],
@@ -62,13 +65,15 @@ class App extends Component {
     }));
   };
 
-  render() {
-    const filterContact = this.state.contacts.filter(contact => {
-      return contact.name
-        .toLowerCase()
-        .includes(this.state.filter.toLowerCase());
-    });
+  getVisibleContacts = () => {
+    const { filter, contacts } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
+  };
 
+  render() {
     return (
       <div className={styles.container}>
         <h1>Phonebook</h1>
@@ -76,11 +81,15 @@ class App extends Component {
 
         <div>
           <h2>Constacts</h2>
-          <Filter filter={this.changeFilter} />
-          <ContactList
-            filter={filterContact}
-            deleteContact={this.deleteContact}
-          />
+          <Filter value={this.state.filter} filter={this.changeFilter} />
+          {this.state.contacts.length > 0 ? (
+            <ContactList
+              contacts={this.getVisibleContacts()}
+              deleteContact={this.deleteContact}
+            />
+          ) : (
+            <p>No contacts</p>
+          )}
         </div>
       </div>
     );
