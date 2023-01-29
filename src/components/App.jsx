@@ -43,9 +43,7 @@ class App extends Component {
 
     if (
       this.state.contacts.find(item => {
-        return (
-          item.name.toLocaleLowerCase() === contact.name.toLocaleLowerCase()
-        );
+        return item.name.toLowerCase() === contact.name.toLowerCase();
       })
     ) {
       return Notiflix.Notify.failure(`${contact.name} is already in contacts`);
